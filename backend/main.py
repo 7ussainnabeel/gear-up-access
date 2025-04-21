@@ -5,6 +5,13 @@ from backend.init_db import SessionLocal, engine
 from backend.models import Base, User, UserRole
 from pydantic import BaseModel
 from typing import List, Optional
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+
+SECRET_KEY = "your_secret_key_here"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 Base.metadata.create_all(bind=engine)
 
@@ -49,45 +56,40 @@ class UserUpdatePassword(BaseModel):
     old_password: str
     new_password: str
 
-# API endpoints
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
-@app.get("/users/", response_model=List[UserOut])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = db.query(User).offset(skip).limit(limit).all()
-    return users
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-@app.get("/users/{user_id}", response_model=UserOut)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+def authenticate_user(db: Session, email: str, password: str):
+    user = db.query(User).filter(User.email == email).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        return False
+    if not user.verify_password(password):
+        return False
     return user
 
-@app.post("/users/", response_model=UserOut)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    new_user = User(
-        name=user.name,
-        email=user.email,
-        role=user.role
-    )
-    new_user.set_password(user.password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=15))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
-@app.put("/users/{user_id}/password")
-def update_password(user_id: int, passwords: UserUpdatePassword, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+@app.post("/token", response_model=Token)
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    if not user.verify_password(passwords.old_password):
-        raise HTTPException(status_code=400, detail="Old password is incorrect")
-    user.set_password(passwords.new_password)
-    db.commit()
-    return {"message": "Password updated successfully"}
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 # Additional endpoints for profile and notifications can be added here
