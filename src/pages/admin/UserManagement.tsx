@@ -31,6 +31,18 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { UserPlus, Edit, Trash2, User as UserIcon } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import * as XLSX from "xlsx";
+
+const DEPARTMENTS = [
+  "IT",
+  "Marketing",
+  "Finance",
+  "Executive",
+  "Support",
+  "HR",
+  "Sales",
+];
 
 const UserManagement = () => {
   const { toast } = useToast();
@@ -43,6 +55,24 @@ const UserManagement = () => {
     role: "user" as UserRole,
     department: "",
   });
+
+  // Export users to Excel function
+  const handleExportExcel = () => {
+    const dataToExport = users.map(({ id, name, email, role, department, dateCreated, isActive }) => ({
+      ID: id,
+      Name: name,
+      Email: email,
+      Role: role,
+      Department: department,
+      "Date Created": new Date(dateCreated).toLocaleDateString(),
+      Status: isActive ? "Active" : "Inactive",
+    }));
+    const ws = XLSX.utils.json_to_sheet(dataToExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Users");
+    XLSX.writeFile(wb, "users.xlsx");
+    toast({ title: "Export Complete", description: "User data exported to Excel!" });
+  };
 
   const handleCreateUser = () => {
     setEditingUser(null);
@@ -131,6 +161,11 @@ const UserManagement = () => {
     setFormData({ ...formData, role: value as UserRole });
   };
 
+  // New: handle department change from radio button
+  const handleDepartmentChange = (value: string) => {
+    setFormData({ ...formData, department: value });
+  };
+
   return (
     <DashboardLayout requiredRole="admin">
       <div className="space-y-6">
@@ -141,10 +176,15 @@ const UserManagement = () => {
               Add, edit, or remove users from the system
             </p>
           </div>
-          <Button onClick={handleCreateUser}>
-            <UserPlus className="mr-2 h-4 w-4" />
-            Add User
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={handleExportExcel} variant="outline">
+              Export to Excel
+            </Button>
+            <Button onClick={handleCreateUser}>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add User
+            </Button>
+          </div>
         </div>
 
         <Card>
@@ -279,13 +319,21 @@ const UserManagement = () => {
                   </SelectContent>
                 </Select>
               </div>
+              {/* Department as radio group */}
               <div className="grid gap-2">
-                <Label htmlFor="department">Department</Label>
-                <Input
-                  id="department"
+                <Label>Department</Label>
+                <RadioGroup
                   value={formData.department}
-                  onChange={handleInputChange}
-                />
+                  onValueChange={handleDepartmentChange}
+                  className="flex flex-wrap gap-4"
+                >
+                  {DEPARTMENTS.map((dept) => (
+                    <div key={dept} className="flex items-center space-x-2">
+                      <RadioGroupItem value={dept} id={dept} />
+                      <Label htmlFor={dept} className="capitalize cursor-pointer">{dept}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
               </div>
             </div>
 
