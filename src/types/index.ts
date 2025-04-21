@@ -89,7 +89,7 @@ export const MOCK_USERS: User[] = [
   {
     id: '1',
     name: 'Admin User',
-    email: 'admin@example.com',
+    email: 'admin@icarlton.com',
     role: 'admin',
     department: 'IT',
     dateCreated: '2023-01-01',
@@ -116,7 +116,7 @@ export const MOCK_USERS: User[] = [
   {
     id: '4',
     name: 'Management User',
-    email: 'manager@example.com',
+    email: 'info@icarlton.com',
     role: 'management',
     department: 'Executive',
     dateCreated: '2023-01-04',
@@ -125,7 +125,7 @@ export const MOCK_USERS: User[] = [
   {
     id: '5',
     name: 'IT Support',
-    email: 'itsupport@example.com',
+    email: 'support@icarlton.com',
     role: 'it',
     department: 'IT',
     dateCreated: '2023-01-05',

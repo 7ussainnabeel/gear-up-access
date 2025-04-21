@@ -90,10 +90,10 @@ const Login = () => {
             <div className="text-sm text-muted-foreground mt-4">
               <p>Demo Accounts (use any password):</p>
               <ul className="list-disc pl-5 mt-2">
-                <li>admin@example.com (Admin)</li>
+                <li>admin@icarlton.com (Admin)</li>
                 <li>john@example.com (User)</li>
-                <li>manager@example.com (Management)</li>
-                <li>itsupport@example.com (IT)</li>
+                <li>info@icarlton.com (Management)</li>
+                <li>support@icarlton.com (IT)</li>
               </ul>
             </div>
           </CardFooter>

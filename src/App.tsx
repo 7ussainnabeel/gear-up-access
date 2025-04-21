@@ -22,6 +22,9 @@ import UserDashboard from "./pages/user/UserDashboard";
 import RequestAsset from "./pages/user/RequestAsset";
 import ConsentForms from "./pages/user/ConsentForms";
 
+// IT Team Page
+import ItDashboard from "./pages/it/ItDashboard";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -48,6 +51,9 @@ const App = () => (
               <Route path="/dashboard" element={<UserDashboard />} />
               <Route path="/dashboard/request" element={<RequestAsset />} />
               <Route path="/dashboard/consent-forms" element={<ConsentForms />} />
+
+              {/* IT Team Route */}
+              <Route path="/it-dashboard" element={<ItDashboard />} />
               
               {/* 404 Page */}
               <Route path="*" element={<NotFound />} />
