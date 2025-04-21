@@ -19,6 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# To run on assigned IP, use host parameter in uvicorn command
+
 # Dependency to get DB session
 def get_db():
     db = SessionLocal()
