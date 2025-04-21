@@ -11,7 +11,8 @@ import {
   ClipboardCheck,
   FileX,
   Settings,
-  Columns2
+  Columns2,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -133,13 +134,18 @@ const Sidebar = ({ className }: SidebarProps) => {
     },
     {
       name: "Email Requests",
-      href: "/it-dashboard/email-requests",
-      icon: FileText,
+      href: "/it-dashboard#email-requests",
+      icon: Mail,
     },
     {
       name: "Device Requests",
-      href: "/it-dashboard/device-requests",
+      href: "/it-dashboard#device-requests",
       icon: Computer,
+    },
+    {
+      name: "Asset Management",
+      href: "/it-dashboard#asset-management",
+      icon: Smartphone,
     },
   ];
 
