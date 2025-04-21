@@ -1,15 +1,17 @@
-
 import DashboardLayout from "@/components/shared/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { useAssets } from "@/context/AssetContext";
-import { MOCK_USERS } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Computer, Car, Smartphone, Phone, Mail, FileText } from "lucide-react";
 
 const UserDashboard = () => {
-  const { currentUser } = useAuth();
-  const { assets, assetRequests, consentForms } = useAssets();
+  const { currentUser, loading: authLoading } = useAuth();
+  const { assets, assetRequests, consentForms, loading: assetsLoading } = useAssets();
+
+  if (authLoading || assetsLoading) {
+    return <div>Loading...</div>;
+  }
 
   // Get user's assets
   const userAssets = assets.filter(asset => asset.assignedTo === currentUser?.id);
