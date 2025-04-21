@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import AssetRequests from "./pages/admin/AssetRequests";
+import AdminManagementHub from "./pages/AdminManagementHub";
 
 // User Pages
 import UserDashboard from "./pages/user/UserDashboard";
@@ -40,6 +41,8 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<UserManagement />} />
               <Route path="/admin/requests" element={<AssetRequests />} />
+              {/* Shared Admin/Management Page */}
+              <Route path="/admin-management" element={<AdminManagementHub />} />
               
               {/* User Routes */}
               <Route path="/dashboard" element={<UserDashboard />} />

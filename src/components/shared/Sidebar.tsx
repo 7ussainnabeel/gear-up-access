@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import { UserRole } from "@/types";
 import { useAuth } from "@/context/AuthContext";
@@ -12,6 +11,7 @@ import {
   ClipboardCheck,
   FileX,
   Settings,
+  Columns2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -61,6 +61,11 @@ const Sidebar = ({ className }: SidebarProps) => {
       name: "Settings",
       href: "/admin/settings",
       icon: Settings,
+    },
+    {
+      name: "Admin/Management Hub",
+      href: "/admin-management",
+      icon: Columns2,
     },
   ];
 
@@ -112,6 +117,11 @@ const Sidebar = ({ className }: SidebarProps) => {
       name: "Terminations",
       href: "/management/terminations",
       icon: FileX,
+    },
+    {
+      name: "Admin/Management Hub",
+      href: "/admin-management",
+      icon: Columns2,
     },
   ];
 
