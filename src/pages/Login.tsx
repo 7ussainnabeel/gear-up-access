@@ -1,100 +1,119 @@
 
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { UserRole } from "@/types";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const { login, isAuthenticated, currentUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { login, currentUser } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  // Redirect if already logged in
+  if (currentUser) {
+    const dashboardRoutes: Record<string, string> = {
+      admin: "/admin",
+      management: "/management",
+      user: "/dashboard",
+      it: "/it-dashboard",
+    };
     
-    if (!email || !password) {
-      setError("Please enter both email and password");
-      return;
-    }
+    const route = dashboardRoutes[currentUser.role] || "/";
+    navigate(route);
+  }
 
-    const success = login(email, password);
-    if (!success) {
-      setError("Invalid email or password");
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const success = await login(email, password);
+      
+      if (success) {
+        // Login automatically redirects to the appropriate dashboard based on user role
+        const dashboardRoutes: Record<string, string> = {
+          admin: "/admin",
+          management: "/management",
+          user: "/dashboard",
+          it: "/it-dashboard",
+        };
+        
+        const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+        const route = dashboardRoutes[user.role] || "/";
+        navigate(route);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // If already authenticated, redirect to appropriate dashboard
-  if (isAuthenticated && currentUser) {
-    const dashboardRoutes: Record<UserRole, string> = {
-      admin: "/admin",
-      user: "/dashboard",
-      management: "/management",
-      it: "/it-dashboard"
-    };
-    return <Navigate to={dashboardRoutes[currentUser.role]} />;
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md p-4">
         <Card>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">
-              Asset Management System
-            </CardTitle>
-            <CardDescription className="text-center">
+          <CardHeader className="space-y-1 text-center">
+            <CardTitle className="text-2xl font-bold">Asset Manager</CardTitle>
+            <CardDescription>
               Enter your credentials to sign in
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit}>
-              {error && (
-                <Alert variant="destructive" className="mb-4">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full">
-                  Sign In
-                </Button>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@icarlton.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  <a
+                    href="#"
+                    className="text-sm text-blue-500 hover:text-blue-700"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col">
-            <div className="text-sm text-muted-foreground mt-4">
-              <p>Demo Accounts (use any password):</p>
-              <ul className="list-disc pl-5 mt-2">
-                <li>admin@icarlton.com (Admin)</li>
-                <li>john@example.com (User)</li>
-                <li>info@icarlton.com (Management)</li>
-                <li>support@icarlton.com (IT)</li>
-              </ul>
+          <CardFooter className="justify-center">
+            <div className="text-sm text-center text-gray-500">
+              <p>Demo accounts:</p>
+              <p>admin@icarlton.com / management@icarlton.com / support@icarlton.com</p>
             </div>
           </CardFooter>
         </Card>
