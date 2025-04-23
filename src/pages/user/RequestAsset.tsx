@@ -65,8 +65,17 @@ const RequestAsset = () => {
       return;
     }
 
+    if (!currentUser) {
+      toast({
+        title: "Authentication Error",
+        description: "You must be logged in to request an asset",
+        variant: "destructive",
+      });
+      return;
+    }
+
     createAssetRequest({
-      userId: currentUser!.id,
+      userId: currentUser.id,
       assetType: assetType as AssetType,
       requestDetails: replacement 
         ? `${details}\n\nReplacement Reason: ${replacementReason}` 

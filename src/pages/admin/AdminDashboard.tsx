@@ -10,7 +10,7 @@ const AdminDashboard = () => {
   // Calculate stats
   const pendingRequests = assetRequests.filter(req => req.status === 'pending').length;
   const pendingConsentForms = consentForms.filter(form => form.sent && !form.signed).length;
-  const pendingTerminations = terminationRequests.filter(term => term.status === 'pending').length;
+  const pendingTerminations = terminationRequests ? terminationRequests.filter(term => term.status === 'pending').length : 0;
 
   const statCards = [
     {

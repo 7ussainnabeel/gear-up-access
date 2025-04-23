@@ -89,7 +89,7 @@ const ItDashboard = () => {
     ["computer", "laptop", "mobile", "ip_phone"].includes(asset.type)
   );
 
-  const getAssetIcon = (type: AssetType) => {
+  const getAssetIcon = (type: AssetType | string) => {
     switch (type) {
       case "computer":
         return <Computer className="h-5 w-5" />;
@@ -190,7 +190,7 @@ const ItDashboard = () => {
                               </Button>
                             </>
                           )}
-                          {request.status === 'approved' && !request.approvedByIT && (
+                          {request.status === 'approved' && request.approvedByIT === false && (
                             <Button size="sm" onClick={() => {
                               toast({
                                 title: "Credentials Shared",
@@ -228,7 +228,7 @@ const ItDashboard = () => {
                         <CardHeader className="bg-gray-50 p-4">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                              {getAssetIcon(request.assetType)}
+                              {getAssetIcon(request.assetType as AssetType)}
                               <CardTitle className="text-base">
                                 {request.assetType.replace('_', ' ')} Request
                               </CardTitle>
