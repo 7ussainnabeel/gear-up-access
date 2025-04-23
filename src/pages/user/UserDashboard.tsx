@@ -1,3 +1,4 @@
+
 import DashboardLayout from "@/components/shared/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { useAssets } from "@/context/AssetContext";
@@ -55,6 +56,7 @@ const UserDashboard = () => {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Asset Card */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -111,6 +113,7 @@ const UserDashboard = () => {
             </CardContent>
           </Card>
 
+          {/* Requests Card */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -169,6 +172,7 @@ const UserDashboard = () => {
             </CardContent>
           </Card>
 
+          {/* Quick Actions Card */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
