@@ -1,7 +1,6 @@
-
 // Core types for the asset management system
 
-export type UserRole = 'admin' | 'user' | 'management' | 'it';
+export type UserRole = 'admin' | 'user' | 'management' | 'it' | 'support';
 
 export interface User {
   id: string;

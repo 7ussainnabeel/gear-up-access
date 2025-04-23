@@ -10,7 +10,7 @@ import { useAssets } from "@/context/AssetContext";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Smartphone, Computer, Laptop, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { AssetType } from "@/types";
+import { AssetType, UserRole } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 
 const ItDashboard = () => {
@@ -111,7 +111,7 @@ const ItDashboard = () => {
   };
 
   return (
-    <DashboardLayout requiredRole={['it', 'support']}>
+    <DashboardLayout requiredRole={['it', 'support'] as UserRole[]}>
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">IT Dashboard</h1>

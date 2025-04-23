@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
-export type UserRole = "admin" | "user" | "management" | "it";
+export type UserRole = "admin" | "user" | "management" | "it" | "support";
 
 export type User = {
   id: number;
