@@ -15,16 +15,16 @@ const UserDashboard = () => {
   }
 
   // Get user's assets
-  const userAssets = assets.filter(asset => asset.assignedTo === currentUser?.id);
+  const userAssets = assets.filter(asset => asset.assignedTo === currentUser?.id.toString());
   
   // Get user's requests
   const userRequests = assetRequests.filter(
-    request => request.userId === currentUser?.id
+    request => request.userId === currentUser?.id.toString()
   );
   
   // Get pending consent forms
   const pendingForms = consentForms.filter(
-    form => form.userId === currentUser?.id && form.sent && !form.signed
+    form => form.userId === currentUser?.id.toString() && form.sent && !form.signed
   );
 
   return (

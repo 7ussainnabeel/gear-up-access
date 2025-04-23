@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import DashboardLayout from "@/components/shared/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
@@ -19,7 +20,7 @@ const ConsentForms = () => {
   const [showDialog, setShowDialog] = useState(false);
   
   // Get forms relevant to the current user
-  const userForms = consentForms.filter(form => form.userId === currentUser?.id);
+  const userForms = consentForms.filter(form => form.userId === currentUser?.id.toString());
   
   // Separate forms by status
   const pendingForms = userForms.filter(form => form.sent && !form.signed);

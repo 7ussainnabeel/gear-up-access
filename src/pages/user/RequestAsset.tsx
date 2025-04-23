@@ -75,7 +75,7 @@ const RequestAsset = () => {
     }
 
     createAssetRequest({
-      userId: currentUser.id,
+      userId: currentUser.id.toString(),
       assetType: assetType as AssetType,
       requestDetails: replacement 
         ? `${details}\n\nReplacement Reason: ${replacementReason}` 
