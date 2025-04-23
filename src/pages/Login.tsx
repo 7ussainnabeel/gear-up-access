@@ -113,7 +113,7 @@ const Login = () => {
           <CardFooter className="justify-center">
             <div className="text-sm text-center text-gray-500">
               <p>Demo accounts:</p>
-              <p>admin@icarlton.com / management@icarlton.com / support@icarlton.com</p>
+              <p>admin@icarlton.com / info@icarlton.com / support@icarlton.com</p>
             </div>
           </CardFooter>
         </Card>

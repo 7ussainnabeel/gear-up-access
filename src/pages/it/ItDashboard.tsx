@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import DashboardLayout from "@/components/shared/DashboardLayout";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
@@ -12,15 +11,20 @@ import { useToast } from "@/hooks/use-toast";
 import { Mail, Smartphone, Computer, Laptop, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AssetType } from "@/types";
+import { useAuth } from "@/context/AuthContext";
 
 const ItDashboard = () => {
   const { toast } = useToast();
+  const { currentUser } = useAuth();
   const { assetRequests, assets, addAsset, updateAsset } = useAssets();
   const [serialNumber, setSerialNumber] = useState("");
   const [assetType, setAssetType] = useState<AssetType>("computer");
   const [assetModel, setAssetModel] = useState("");
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
   
+  // Check if current user has permission to manage assets
+  const canManageAssets = currentUser?.role === 'it' || currentUser?.role === 'support';
+
   // Filter for IT-related asset requests (email or devices)
   const itRelatedRequests = assetRequests.filter(
     request => ["email", "computer", "laptop", "mobile", "ip_phone"].includes(request.assetType)
@@ -37,10 +41,10 @@ const ItDashboard = () => {
   );
 
   const handleAddSerialNumber = () => {
-    if (!selectedAssetId || !serialNumber || !assetModel) {
+    if (!canManageAssets) {
       toast({
-        title: "Missing information",
-        description: "Please select an asset and provide both serial number and model.",
+        title: "Access Denied",
+        description: "You do not have permission to add asset information.",
         variant: "destructive",
       });
       return;
@@ -107,7 +111,7 @@ const ItDashboard = () => {
   };
 
   return (
-    <DashboardLayout requiredRole="it">
+    <DashboardLayout requiredRole={['it', 'support']}>
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold">IT Dashboard</h1>
@@ -393,6 +397,11 @@ const ItDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+      {!canManageAssets && (
+        <div className="text-center text-red-500 mt-4">
+          You do not have permission to manage assets.
+        </div>
+      )}
     </DashboardLayout>
   );
 };
