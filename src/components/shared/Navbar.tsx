@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +18,7 @@ const roleDashboardMap: Record<UserRole, string> = {
   user: "/dashboard",
   management: "/management",
   it: "/it-dashboard",
+  support: "/support-dashboard",
 };
 
 // Sample notifications - in a real app, these would come from your backend
