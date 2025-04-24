@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import DashboardLayout from "@/components/shared/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useAssets } from "@/context/AssetContext";
 import { Computer, Trash2, Car, Laptop, Smartphone, Keyboard, Mouse, Monitor, Mail, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -258,7 +259,7 @@ const ItDashboard = () => {
                         <CardHeader className="bg-gray-50 p-4">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                              {getAssetIcon(request.assetType as AssetType)}
+                              {getAssetIcon(request.assetType)}
                               <CardTitle className="text-base">
                                 {request.assetType.replace('_', ' ')} Request
                               </CardTitle>
@@ -339,7 +340,7 @@ const ItDashboard = () => {
                     <Label htmlFor="assetSelect">Asset Type</Label>
                     <Select 
                       value={assetType} 
-                      onValueChange={setAssetType}
+                      onValueChange={(value) => setAssetType(value as AssetType)}
                     >
                       <SelectTrigger id="assetSelect">
                         <SelectValue placeholder="Select an asset type" />
@@ -348,7 +349,7 @@ const ItDashboard = () => {
                         {assetTypes.map((type) => (
                           <SelectItem key={`${type.value}-${type.label}`} value={type.value}>
                             <div className="flex items-center gap-2">
-                              <type.icon className="h-4 w-4" />
+                              {React.createElement(type.icon, { className: "h-4 w-4" })}
                               <span>{type.label}</span>
                             </div>
                           </SelectItem>
