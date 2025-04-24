@@ -149,11 +149,25 @@ const Sidebar = ({ className }: SidebarProps) => {
     },
   ];
 
+  const supportLinks = [
+    {
+      name: "Dashboard",
+      href: "/support-dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      name: "Asset Lookup",
+      href: "/support-dashboard#asset-lookup",
+      icon: Computer,
+    },
+  ];
+
   const links = {
     admin: adminLinks,
     user: userLinks,
     management: managementLinks,
     it: itLinks,
+    support: supportLinks,
   };
 
   return (

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,6 +27,10 @@ import ConsentForms from "./pages/user/ConsentForms";
 // IT Team Page
 import ItDashboard from "./pages/it/ItDashboard";
 
+// Management Pages
+import ManagementDashboard from "./pages/management/ManagementDashboard";
+import SupportDashboard from "./pages/support/SupportDashboard";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -51,6 +54,15 @@ const App = () => (
               <Route path="/admin/requests" element={<AssetRequests />} />
               {/* Shared Admin/Management Page */}
               <Route path="/admin-management" element={<AdminManagementHub />} />
+              
+              {/* Management Routes */}
+              <Route path="/management" element={<ManagementDashboard />} />
+              <Route path="/management/approvals" element={<AssetRequests />} />
+              <Route path="/management/assets" element={<UserManagement />} />
+              <Route path="/management/terminations" element={<AssetRequests />} />
+              
+              {/* Support Routes */}
+              <Route path="/support-dashboard" element={<SupportDashboard />} />
               
               {/* User Routes */}
               <Route path="/dashboard" element={<UserDashboard />} />
