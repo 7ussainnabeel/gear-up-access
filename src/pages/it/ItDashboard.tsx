@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import React, { useState } from "react";
 import DashboardLayout from "@/components/shared/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useAssets } from "@/context/AssetContext";
@@ -20,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
 
-const assetTypes: { value: AssetType; label: string; icon: React.ComponentType }[] = [
+const assetTypes: { value: AssetType; label: string; icon: React.ComponentType<{className?: string}> }[] = [
   { value: "company_car", label: "Company Car", icon: Car },
   { value: "laptop", label: "Laptop", icon: Laptop },
   { value: "computer", label: "PC", icon: Computer },
@@ -39,20 +38,16 @@ const ItDashboard = () => {
   const [assetModel, setAssetModel] = useState("");
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
   
-  // Check if current user has permission to manage assets
   const canManageAssets = currentUser?.role === 'it' || currentUser?.role === 'support';
 
-  // Filter for IT-related asset requests (email or devices)
   const itRelatedRequests = assetRequests.filter(
     request => ["email", "computer", "laptop", "mobile", "ip_phone"].includes(request.assetType)
   );
 
-  // Filter email-specific requests
   const emailRequests = itRelatedRequests.filter(
     request => request.assetType === "email"
   );
 
-  // Filter device-specific requests
   const deviceRequests = itRelatedRequests.filter(
     request => ["computer", "laptop", "mobile", "ip_phone"].includes(request.assetType)
   );
@@ -67,11 +62,9 @@ const ItDashboard = () => {
       return;
     }
 
-    // Find the asset in the assets array
     const assetToUpdate = assets.find(asset => asset.id === selectedAssetId);
     
     if (assetToUpdate) {
-      // Update existing asset
       updateAsset({
         ...assetToUpdate,
         serialNumber,
@@ -83,7 +76,6 @@ const ItDashboard = () => {
         description: `Serial number and model added to ${assetToUpdate.type.replace('_', ' ')}`,
       });
     } else {
-      // Add new asset if needed (this is a fallback)
       addAsset({
         type: assetType,
         serialNumber,
@@ -98,13 +90,11 @@ const ItDashboard = () => {
       });
     }
 
-    // Reset form
     setSerialNumber("");
     setAssetModel("");
     setSelectedAssetId(null);
   };
 
-  // Get pending assets without serial numbers
   const pendingAssets = assets.filter(
     asset => !asset.serialNumber && 
     ["computer", "laptop", "mobile", "ip_phone"].includes(asset.type)
@@ -129,8 +119,6 @@ const ItDashboard = () => {
 
   const handleRemoveAsset = (assetId: string) => {
     const updatedAssets = assets.filter(asset => asset.id !== assetId);
-    // Update the assets in context
-    // Note: You might want to add confirmation dialog here
     toast({
       title: "Asset Removed",
       description: "The asset has been removed from inventory",
@@ -154,7 +142,6 @@ const ItDashboard = () => {
             <TabsTrigger value="asset-management">Asset Management</TabsTrigger>
           </TabsList>
           
-          {/* Email Requests Tab */}
           <TabsContent value="email-requests" className="space-y-4">
             <Card>
               <CardHeader>
@@ -240,7 +227,6 @@ const ItDashboard = () => {
             </Card>
           </TabsContent>
           
-          {/* Device Requests Tab */}
           <TabsContent value="device-requests" className="space-y-4">
             <Card>
               <CardHeader>
@@ -328,7 +314,6 @@ const ItDashboard = () => {
             </Card>
           </TabsContent>
           
-          {/* Asset Management Tab */}
           <TabsContent value="asset-management" className="space-y-4">
             <Card>
               <CardHeader>
@@ -340,7 +325,7 @@ const ItDashboard = () => {
                     <Label htmlFor="assetSelect">Asset Type</Label>
                     <Select 
                       value={assetType} 
-                      onValueChange={(value) => setAssetType(value as AssetType)}
+                      onValueChange={(value: AssetType) => setAssetType(value)}
                     >
                       <SelectTrigger id="assetSelect">
                         <SelectValue placeholder="Select an asset type" />
@@ -349,7 +334,6 @@ const ItDashboard = () => {
                         {assetTypes.map((type) => (
                           <SelectItem key={`${type.value}-${type.label}`} value={type.value}>
                             <div className="flex items-center gap-2">
-                              {/* Fix: Use JSX to create the icon component instead of React.createElement */}
                               <type.icon className="h-4 w-4" />
                               <span>{type.label}</span>
                             </div>
