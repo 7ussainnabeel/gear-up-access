@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
 
-const assetTypes: { value: AssetType; label: string; icon: React.FC }[] = [
+const assetTypes: { value: AssetType; label: string; icon: React.ComponentType }[] = [
   { value: "company_car", label: "Company Car", icon: Car },
   { value: "laptop", label: "Laptop", icon: Laptop },
   { value: "computer", label: "PC", icon: Computer },
@@ -349,7 +349,8 @@ const ItDashboard = () => {
                         {assetTypes.map((type) => (
                           <SelectItem key={`${type.value}-${type.label}`} value={type.value}>
                             <div className="flex items-center gap-2">
-                              {React.createElement(type.icon, { className: "h-4 w-4" })}
+                              {/* Fix: Use JSX to create the icon component instead of React.createElement */}
+                              <type.icon className="h-4 w-4" />
                               <span>{type.label}</span>
                             </div>
                           </SelectItem>
