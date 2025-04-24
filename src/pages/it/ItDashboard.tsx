@@ -1,17 +1,33 @@
 import { useState } from "react";
 import DashboardLayout from "@/components/shared/DashboardLayout";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAssets } from "@/context/AssetContext";
-import { useToast } from "@/hooks/use-toast";
-import { Mail, Smartphone, Computer, Laptop, Phone } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Computer, Trash2, Car, Laptop, Smartphone, Keyboard, Mouse, Monitor, Mail, Phone } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 import { AssetType, UserRole } from "@/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
+
+const assetTypes: { value: AssetType; label: string; icon: React.FC }[] = [
+  { value: "company_car", label: "Company Car", icon: Car },
+  { value: "laptop", label: "Laptop", icon: Laptop },
+  { value: "computer", label: "PC", icon: Computer },
+  { value: "mobile", label: "Mobile", icon: Smartphone },
+  { value: "accessories", label: "Keyboard", icon: Keyboard },
+  { value: "accessories", label: "Mouse", icon: Mouse },
+  { value: "accessories", label: "Monitor", icon: Monitor },
+];
 
 const ItDashboard = () => {
   const { toast } = useToast();
@@ -108,6 +124,16 @@ const ItDashboard = () => {
       default:
         return <Computer className="h-5 w-5" />;
     }
+  };
+
+  const handleRemoveAsset = (assetId: string) => {
+    const updatedAssets = assets.filter(asset => asset.id !== assetId);
+    // Update the assets in context
+    // Note: You might want to add confirmation dialog here
+    toast({
+      title: "Asset Removed",
+      description: "The asset has been removed from inventory",
+    });
   };
 
   return (
@@ -310,21 +336,20 @@ const ItDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="assetSelect">Select Asset</Label>
+                    <Label htmlFor="assetSelect">Asset Type</Label>
                     <Select 
-                      value={selectedAssetId || ""} 
-                      onValueChange={setSelectedAssetId}
+                      value={assetType} 
+                      onValueChange={setAssetType}
                     >
                       <SelectTrigger id="assetSelect">
-                        <SelectValue placeholder="Select an asset" />
+                        <SelectValue placeholder="Select an asset type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {pendingAssets.map(asset => (
-                          <SelectItem key={asset.id} value={asset.id}>
+                        {assetTypes.map((type) => (
+                          <SelectItem key={`${type.value}-${type.label}`} value={type.value}>
                             <div className="flex items-center gap-2">
-                              {getAssetIcon(asset.type)}
-                              <span>{asset.type.replace('_', ' ')}</span>
-                              {asset.assignedTo && <span className="text-xs text-gray-500">(Assigned)</span>}
+                              <type.icon className="h-4 w-4" />
+                              <span>{type.label}</span>
                             </div>
                           </SelectItem>
                         ))}
@@ -354,9 +379,9 @@ const ItDashboard = () => {
                   
                   <Button 
                     onClick={handleAddSerialNumber}
-                    disabled={!selectedAssetId || !serialNumber || !assetModel}
+                    disabled={!assetType || !serialNumber || !assetModel}
                   >
-                    Update Asset Information
+                    Add Asset Information
                   </Button>
                 </div>
               </CardContent>
@@ -378,15 +403,25 @@ const ItDashboard = () => {
                       .map(asset => (
                         <div key={asset.id} className="flex items-center justify-between p-3 border rounded-md">
                           <div className="flex items-center gap-3">
-                            {getAssetIcon(asset.type)}
+                            <Computer className="h-5 w-5" />
                             <div>
                               <p className="font-medium capitalize">{asset.type.replace('_', ' ')}</p>
                               <p className="text-xs text-muted-foreground">{asset.model}</p>
                             </div>
                           </div>
-                          <div className="text-sm">
-                            <span className="text-muted-foreground mr-2">S/N:</span>
-                            {asset.serialNumber}
+                          <div className="flex items-center gap-4">
+                            <div className="text-sm">
+                              <span className="text-muted-foreground mr-2">S/N:</span>
+                              {asset.serialNumber}
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => handleRemoveAsset(asset.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                       ))}
