@@ -32,7 +32,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { UserPlus, Edit, Trash2, User as UserIcon } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import * as XLSX from "xlsx";
 
 const DEPARTMENTS = [
   "IT",
@@ -56,8 +55,8 @@ const UserManagement = () => {
     department: "",
   });
 
-  // Export users to Excel function
-  const handleExportExcel = () => {
+  // Export users to CSV function
+  const handleExportCSV = () => {
     const dataToExport = users.map(({ id, name, email, role, department, dateCreated, isActive }) => ({
       ID: id,
       Name: name,
@@ -67,11 +66,27 @@ const UserManagement = () => {
       "Date Created": new Date(dateCreated).toLocaleDateString(),
       Status: isActive ? "Active" : "Inactive",
     }));
-    const ws = XLSX.utils.json_to_sheet(dataToExport);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Users");
-    XLSX.writeFile(wb, "users.xlsx");
-    toast({ title: "Export Complete", description: "User data exported to Excel!" });
+
+    // Convert to CSV
+    const headers = Object.keys(dataToExport[0]).join(',');
+    const csvContent = dataToExport.map(row => 
+      Object.values(row).map(value => `"${value}"`).join(',')
+    ).join('\n');
+    
+    const csv = `${headers}\n${csvContent}`;
+    
+    // Create download link
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'users.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({ title: "Export Complete", description: "User data exported to CSV!" });
   };
 
   const handleCreateUser = () => {
@@ -177,8 +192,8 @@ const UserManagement = () => {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button onClick={handleExportExcel} variant="outline">
-              Export to Excel
+            <Button onClick={handleExportCSV} variant="outline">
+              Export to CSV
             </Button>
             <Button onClick={handleCreateUser}>
               <UserPlus className="mr-2 h-4 w-4" />
